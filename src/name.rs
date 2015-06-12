@@ -1,5 +1,4 @@
-use std::fmt::{Display, Formatter, Result};
-use std::fs::File;
+use std::{fmt, fs};
 use std::io::prelude::*;
 use rand::{Rng, thread_rng};
 use yaml_rust::yaml::{Yaml, YamlLoader};
@@ -8,7 +7,7 @@ use super::Item;
 
 lazy_static! {
   static ref NAMES: Vec<Yaml> = {
-    let mut file = File::open("src/data/names.yml").unwrap();
+    let mut file = fs::File::open("src/data/names.yml").unwrap();
     let mut buffer = String::new();
     let _ = file.read_to_string(&mut buffer);
 
@@ -19,8 +18,8 @@ lazy_static! {
 #[derive(Debug, PartialEq)]
 pub enum Gender { Male, Female }
 
-impl Display for Gender {
-  fn fmt(&self, f: &mut Formatter) -> Result {
+impl fmt::Display for Gender {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match *self {
       Gender::Male => write!(f, "男"),
       Gender::Female => write!(f, "女"),
@@ -36,39 +35,29 @@ pub struct Name {
 }
 
 impl Name {
-  pub fn new() -> Name {
+  pub fn from_gender(gender: Gender) -> Name {
     let mut r = thread_rng();
 
-    if r.gen::<bool>() { Name::new_male() } else { Name::new_female() }
-  }
-
-  pub fn new_male() -> Name {
-    let mut r = thread_rng();
+    let first_name = match gender {
+      Gender::Male =>
+        r.choose(NAMES[0]["first_name"]["male"].as_vec().unwrap()).unwrap(),
+      Gender::Female =>
+        r.choose(NAMES[0]["first_name"]["female"].as_vec().unwrap()).unwrap(),
+    };
+    let last_name = r.choose(NAMES[0]["last_name"].as_vec().unwrap()).unwrap();
 
     Name {
       first:
-        Item::from_yaml(
-          r.choose(NAMES[0]["first_name"]["male"].as_vec().unwrap()).unwrap()),
+        Item::new(
+          first_name[0].as_str().unwrap_or(""),
+          first_name[1].as_str().unwrap_or(""),
+          first_name[2].as_str().unwrap_or("")),
       last:
-        Item::from_yaml(
-          r.choose(NAMES[0]["last_name"].as_vec().unwrap()).unwrap()),
-      gender:
-        Gender::Male,
-    }
-  }
-
-  pub fn new_female() -> Name {
-    let mut r = thread_rng();
-
-    Name {
-      first:
-        Item::from_yaml(
-          r.choose(NAMES[0]["first_name"]["female"].as_vec().unwrap()).unwrap()),
-      last:
-        Item::from_yaml(
-          r.choose(NAMES[0]["last_name"].as_vec().unwrap()).unwrap()),
-      gender:
-        Gender::Female,
+        Item::new(
+          last_name[0].as_str().unwrap_or(""),
+          last_name[1].as_str().unwrap_or(""),
+          last_name[2].as_str().unwrap_or("")),
+      gender: gender,
     }
   }
 
@@ -93,8 +82,8 @@ impl Name {
   }
 }
 
-impl Display for Name {
-  fn fmt(&self, f: &mut Formatter) -> Result {
+impl fmt::Display for Name {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "{}", self.to_kanji())
   }
 }
