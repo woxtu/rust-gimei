@@ -1,4 +1,4 @@
-use std::{fmt, fs};
+use std::fmt;
 use std::io::prelude::*;
 use rand::{Rng, thread_rng};
 use yaml_rust::yaml::{Yaml, YamlLoader};
@@ -6,13 +6,8 @@ use yaml_rust::yaml::{Yaml, YamlLoader};
 use super::Item;
 
 lazy_static! {
-  static ref NAMES: Vec<Yaml> = {
-    let mut file = fs::File::open("src/data/names.yml").unwrap();
-    let mut buffer = String::new();
-    let _ = file.read_to_string(&mut buffer);
-
-    YamlLoader::load_from_str(&buffer).unwrap()
-  };
+  static ref NAMES: Vec<Yaml> =
+    YamlLoader::load_from_str(include_str!("data/names.yml")).unwrap();
 }
 
 #[derive(Debug, PartialEq)]
