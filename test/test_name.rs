@@ -1,3 +1,4 @@
+use regex::Regex;
 use gimei::{Gender, Name};
 
 #[test]
@@ -5,30 +6,30 @@ fn first_name() {
   {
     let name = Name::from_gender(Gender::Male);
     {
-      let re = regex!(r"^\p{Han}+$");
+      let re = Regex::new(r"^\p{Han}+$").unwrap();
       assert!(re.is_match(&name.first.kanji));
     }
     {
-      let re = regex!(r"^\p{Hiragana}+$");
+      let re = Regex::new(r"^\p{Hiragana}+$").unwrap();
       assert!(re.is_match(&name.first.hiragana));
     }
     {
-      let re = regex!(r"^\p{Katakana}+$");
+      let re = Regex::new(r"^\p{Katakana}+$").unwrap();
       assert!(re.is_match(&name.first.katakana));
     }
   }
   {
     let name = Name::from_gender(Gender::Female);
     {
-      let re = regex!(r"^\p{Han}+$");
+      let re = Regex::new(r"^\p{Han}+$").unwrap();
       assert!(re.is_match(&name.first.kanji));
     }
     {
-      let re = regex!(r"^\p{Hiragana}+$");
+      let re = Regex::new(r"^\p{Hiragana}+$").unwrap();
       assert!(re.is_match(&name.first.hiragana));
     }
     {
-      let re = regex!(r"^\p{Katakana}+$");
+      let re = Regex::new(r"^\p{Katakana}+$").unwrap();
       assert!(re.is_match(&name.first.katakana));
     }
   }
@@ -39,30 +40,30 @@ fn last_name() {
   {
     let name = Name::from_gender(Gender::Male);
     {
-      let re = regex!(r"^\p{Han}+$");
+      let re = Regex::new(r"^\p{Han}+$").unwrap();
       assert!(re.is_match(&name.last.kanji));
     }
     {
-      let re = regex!(r"^\p{Hiragana}+$");
+      let re = Regex::new(r"^\p{Hiragana}+$").unwrap();
       assert!(re.is_match(&name.last.hiragana));
     }
     {
-      let re = regex!(r"^\p{Katakana}+$");
+      let re = Regex::new(r"^\p{Katakana}+$").unwrap();
       assert!(re.is_match(&name.last.katakana));
     }
   }
   {
     let name = Name::from_gender(Gender::Female);
     {
-      let re = regex!(r"^\p{Han}+$");
+      let re = Regex::new(r"^\p{Han}+$").unwrap();
       assert!(re.is_match(&name.last.kanji));
     }
     {
-      let re = regex!(r"^\p{Hiragana}+$");
+      let re = Regex::new(r"^\p{Hiragana}+$").unwrap();
       assert!(re.is_match(&name.last.hiragana));
     }
     {
-      let re = regex!(r"^\p{Katakana}+$");
+      let re = Regex::new(r"^\p{Katakana}+$").unwrap();
       assert!(re.is_match(&name.last.katakana));
     }
   }
@@ -71,21 +72,21 @@ fn last_name() {
 #[test]
 fn to_kanji() {
   let name = Name::from_gender(Gender::Male);
-  let re = regex!(r"^\p{Han}+\s\p{Han}+$");
+  let re = Regex::new(r"^\p{Han}+\s\p{Han}+$").unwrap();
   assert!(re.is_match(&name.to_kanji()));
 }
 
 #[test]
 fn to_hiragana() {
   let name = Name::from_gender(Gender::Male);
-  let re = regex!(r"^\p{Hiragana}+\s\p{Hiragana}+$");
+  let re = Regex::new(r"^\p{Hiragana}+\s\p{Hiragana}+$").unwrap();
   assert!(re.is_match(&name.to_hiragana()));
 }
 
 #[test]
 fn to_katakana() {
   let name = Name::from_gender(Gender::Male);
-  let re = regex!(r"^\p{Katakana}+\s\p{Katakana}+$");
+  let re = Regex::new(r"^\p{Katakana}+\s\p{Katakana}+$").unwrap();
   assert!(re.is_match(&name.to_katakana()));
 }
 
@@ -116,6 +117,6 @@ fn is_female() {
 #[test]
 fn display() {
   let name = Name::from_gender(Gender::Male);
-  let re = regex!(r"^\p{Han}+\s\p{Han}+$");
+  let re = Regex::new(r"^\p{Han}+\s\p{Han}+$").unwrap();
   assert!(re.is_match(&format!("{}", name)));
 }

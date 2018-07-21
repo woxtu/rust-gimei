@@ -6,13 +6,12 @@ license = "MIT"
 description = "Generate fake name for Japanese"
 
 [dependencies]
-lazy_static = "0.1.*"
-rand = "0.3"
-yaml-rust = "*"
+lazy_static = "1.0"
+rand = "0.5"
+yaml-rust = "0.4"
 
 [dev-dependencies]
-regex = "0.1.8"
-regex_macros = "0.1.17"
+regex = "1.0"
 
 [[test]]
 name = "test"

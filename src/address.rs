@@ -1,5 +1,4 @@
 use std::fmt;
-use std::io::prelude::*;
 use rand::{Rng, thread_rng};
 use yaml_rust::yaml::{Yaml, YamlLoader};
 
