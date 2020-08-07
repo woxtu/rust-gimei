@@ -2,8 +2,11 @@
 name = "gimei"
 version = "0.1.1"
 authors = [ "woxtu <woxtup@gmail.com>" ]
-license = "MIT"
+edition = "2018"
 description = "Generate fake name for Japanese"
+readme = "README.md"
+repository = "https://github.com/woxtu/rust-gimei"
+license = "MIT"
 
 [dependencies]
 lazy_static = "1.0"

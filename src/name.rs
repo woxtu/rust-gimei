@@ -1,3 +1,4 @@
+use lazy_static::lazy_static;
 use rand::{thread_rng, Rng};
 use std::fmt;
 use yaml_rust::yaml::{Yaml, YamlLoader};
