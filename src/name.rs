@@ -1,16 +1,18 @@
+use rand::{thread_rng, Rng};
 use std::fmt;
-use rand::{Rng, thread_rng};
 use yaml_rust::yaml::{Yaml, YamlLoader};
 
 use super::Item;
 
 lazy_static! {
-  static ref NAMES: Vec<Yaml> =
-    YamlLoader::load_from_str(include_str!("data/names.yml")).unwrap();
+  static ref NAMES: Vec<Yaml> = YamlLoader::load_from_str(include_str!("data/names.yml")).unwrap();
 }
 
 #[derive(Debug, PartialEq)]
-pub enum Gender { Male, Female }
+pub enum Gender {
+  Male,
+  Female,
+}
 
 impl fmt::Display for Gender {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -33,24 +35,22 @@ impl Name {
     let mut r = thread_rng();
 
     let first_name = match gender {
-      Gender::Male =>
-        r.choose(NAMES[0]["first_name"]["male"].as_vec().unwrap()).unwrap(),
-      Gender::Female =>
-        r.choose(NAMES[0]["first_name"]["female"].as_vec().unwrap()).unwrap(),
+      Gender::Male => r.choose(NAMES[0]["first_name"]["male"].as_vec().unwrap()).unwrap(),
+      Gender::Female => r.choose(NAMES[0]["first_name"]["female"].as_vec().unwrap()).unwrap(),
     };
     let last_name = r.choose(NAMES[0]["last_name"].as_vec().unwrap()).unwrap();
 
     Name {
-      first:
-        Item::new(
-          first_name[0].as_str().unwrap_or(""),
-          first_name[1].as_str().unwrap_or(""),
-          first_name[2].as_str().unwrap_or("")),
-      last:
-        Item::new(
-          last_name[0].as_str().unwrap_or(""),
-          last_name[1].as_str().unwrap_or(""),
-          last_name[2].as_str().unwrap_or("")),
+      first: Item::new(
+        first_name[0].as_str().unwrap_or(""),
+        first_name[1].as_str().unwrap_or(""),
+        first_name[2].as_str().unwrap_or(""),
+      ),
+      last: Item::new(
+        last_name[0].as_str().unwrap_or(""),
+        last_name[1].as_str().unwrap_or(""),
+        last_name[2].as_str().unwrap_or(""),
+      ),
       gender: gender,
     }
   }

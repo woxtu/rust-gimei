@@ -1,12 +1,11 @@
+use rand::{thread_rng, Rng};
 use std::fmt;
-use rand::{Rng, thread_rng};
 use yaml_rust::yaml::{Yaml, YamlLoader};
 
 use super::Item;
 
 lazy_static! {
-  static ref ADDRESSES: Vec<Yaml> =
-    YamlLoader::load_from_str(include_str!("data/addresses.yml")).unwrap();
+  static ref ADDRESSES: Vec<Yaml> = YamlLoader::load_from_str(include_str!("data/addresses.yml")).unwrap();
 }
 
 #[derive(Debug)]
@@ -20,27 +19,26 @@ impl Address {
   pub fn new() -> Address {
     let mut r = thread_rng();
 
-    let prefecture =
-      r.choose(ADDRESSES[0]["addresses"]["prefecture"].as_vec().unwrap()).unwrap();
+    let prefecture = r.choose(ADDRESSES[0]["addresses"]["prefecture"].as_vec().unwrap()).unwrap();
     let city = r.choose(ADDRESSES[0]["addresses"]["city"].as_vec().unwrap()).unwrap();
     let town = r.choose(ADDRESSES[0]["addresses"]["town"].as_vec().unwrap()).unwrap();
 
     Address {
-      prefecture:
-        Item::new(
-          prefecture[0].as_str().unwrap_or(""),
-          prefecture[1].as_str().unwrap_or(""),
-          prefecture[2].as_str().unwrap_or("")),
-      city:
-        Item::new(
-          city[0].as_str().unwrap_or(""),
-          city[1].as_str().unwrap_or(""),
-          city[2].as_str().unwrap_or("")),
-      town:
-        Item::new(
-          town[0].as_str().unwrap_or(""),
-          town[1].as_str().unwrap_or(""),
-          town[2].as_str().unwrap_or("")),
+      prefecture: Item::new(
+        prefecture[0].as_str().unwrap_or(""),
+        prefecture[1].as_str().unwrap_or(""),
+        prefecture[2].as_str().unwrap_or(""),
+      ),
+      city: Item::new(
+        city[0].as_str().unwrap_or(""),
+        city[1].as_str().unwrap_or(""),
+        city[2].as_str().unwrap_or(""),
+      ),
+      town: Item::new(
+        town[0].as_str().unwrap_or(""),
+        town[1].as_str().unwrap_or(""),
+        town[2].as_str().unwrap_or(""),
+      ),
     }
   }
 
