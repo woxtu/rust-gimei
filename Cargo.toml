@@ -15,7 +15,3 @@ yaml-rust = "0.4"
 
 [dev-dependencies]
 regex = "1.0"
-
-[[test]]
-name = "test"
-path = "test/test.rs"
