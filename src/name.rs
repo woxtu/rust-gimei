@@ -3,7 +3,7 @@ use rand::seq::SliceRandom;
 use serde::Deserialize;
 use std::{convert, fmt};
 
-use super::Item;
+use crate::Item;
 
 #[derive(Debug, Deserialize)]
 struct FirstName {
@@ -37,7 +37,7 @@ impl fmt::Display for Gender {
 }
 
 #[derive(Debug)]
-pub struct MaleName {
+struct MaleName {
   first: Item,
   last: Item,
 }
@@ -52,7 +52,7 @@ impl rand::distributions::Distribution<MaleName> for rand::distributions::Standa
 }
 
 #[derive(Debug)]
-pub struct FemaleName {
+struct FemaleName {
   first: Item,
   last: Item,
 }
@@ -118,5 +118,21 @@ impl convert::From<FemaleName> for Name {
 impl fmt::Display for Name {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "{}", self.to_kanji())
+  }
+}
+
+pub fn male() -> Name {
+  rand::random::<MaleName>().into()
+}
+
+pub fn female() -> Name {
+  rand::random::<FemaleName>().into()
+}
+
+pub fn name() -> Name {
+  if rand::random() {
+    male()
+  } else {
+    female()
   }
 }

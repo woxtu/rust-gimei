@@ -3,7 +3,7 @@ use rand::seq::SliceRandom;
 use serde::Deserialize;
 use std::fmt;
 
-use super::Item;
+use crate::Item;
 
 #[derive(Debug, Deserialize)]
 struct Addresses {
@@ -56,4 +56,8 @@ impl fmt::Display for Address {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "{}", self.to_kanji())
   }
+}
+
+pub fn address() -> Address {
+  rand::random()
 }
