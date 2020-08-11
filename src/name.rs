@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
-use rand::{seq::SliceRandom, thread_rng};
+use rand::seq::SliceRandom;
 use serde::Deserialize;
-use std::fmt;
+use std::{convert, fmt};
 
 use super::Item;
 
@@ -36,6 +36,36 @@ impl fmt::Display for Gender {
   }
 }
 
+#[derive(Debug)]
+pub struct MaleName {
+  first: Item,
+  last: Item,
+}
+
+impl rand::distributions::Distribution<MaleName> for rand::distributions::Standard {
+  fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> MaleName {
+    MaleName {
+      first: DATA.first_name.male.choose(rng).cloned().unwrap(),
+      last: DATA.last_name.choose(rng).cloned().unwrap(),
+    }
+  }
+}
+
+#[derive(Debug)]
+pub struct FemaleName {
+  first: Item,
+  last: Item,
+}
+
+impl rand::distributions::Distribution<FemaleName> for rand::distributions::Standard {
+  fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> FemaleName {
+    FemaleName {
+      first: DATA.first_name.female.choose(rng).cloned().unwrap(),
+      last: DATA.last_name.choose(rng).cloned().unwrap(),
+    }
+  }
+}
+
 #[derive(Clone, Debug)]
 pub struct Name {
   pub first: Item,
@@ -44,18 +74,6 @@ pub struct Name {
 }
 
 impl Name {
-  pub fn from_gender(gender: Gender) -> Name {
-    let mut rng = thread_rng();
-
-    let first = match gender {
-      Gender::Male => DATA.first_name.male.choose(&mut rng).cloned().unwrap(),
-      Gender::Female => DATA.first_name.female.choose(&mut rng).cloned().unwrap(),
-    };
-    let last = DATA.last_name.choose(&mut rng).cloned().unwrap();
-
-    Name { first, last, gender }
-  }
-
   pub fn to_kanji(&self) -> String {
     format!("{} {}", self.last.kanji, self.first.kanji)
   }
@@ -74,6 +92,26 @@ impl Name {
 
   pub fn is_female(&self) -> bool {
     self.gender == Gender::Female
+  }
+}
+
+impl convert::From<MaleName> for Name {
+  fn from(name: MaleName) -> Self {
+    Self {
+      first: name.first,
+      last: name.last,
+      gender: Gender::Male,
+    }
+  }
+}
+
+impl convert::From<FemaleName> for Name {
+  fn from(name: FemaleName) -> Self {
+    Self {
+      first: name.first,
+      last: name.last,
+      gender: Gender::Female,
+    }
   }
 }
 

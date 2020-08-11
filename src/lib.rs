@@ -1,5 +1,3 @@
-use rand::Rng;
-
 pub mod address;
 pub mod item;
 pub mod name;
@@ -9,21 +7,21 @@ pub use item::Item;
 pub use name::{Gender, Name};
 
 pub fn name() -> Name {
-  if rand::thread_rng().gen() {
-    Name::from_gender(Gender::Male)
+  if rand::random() {
+    rand::random::<name::MaleName>().into()
   } else {
-    Name::from_gender(Gender::Female)
+    rand::random::<name::FemaleName>().into()
   }
 }
 
 pub fn male() -> Name {
-  Name::from_gender(Gender::Male)
+  rand::random::<name::MaleName>().into()
 }
 
 pub fn female() -> Name {
-  Name::from_gender(Gender::Female)
+  rand::random::<name::FemaleName>().into()
 }
 
 pub fn address() -> Address {
-  Address::new()
+  rand::random()
 }

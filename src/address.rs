@@ -1,5 +1,5 @@
 use lazy_static::lazy_static;
-use rand::{seq::SliceRandom, thread_rng};
+use rand::seq::SliceRandom;
 use serde::Deserialize;
 use std::fmt;
 
@@ -29,16 +29,6 @@ pub struct Address {
 }
 
 impl Address {
-  pub fn new() -> Address {
-    let mut r = thread_rng();
-
-    let prefecture = DATA.addresses.prefecture.choose(&mut r).cloned().unwrap();
-    let city = DATA.addresses.city.choose(&mut r).cloned().unwrap();
-    let town = DATA.addresses.town.choose(&mut r).cloned().unwrap();
-
-    Address { prefecture, city, town }
-  }
-
   pub fn to_kanji(&self) -> String {
     format!("{}{}{}", self.prefecture.kanji, self.city.kanji, self.town.kanji)
   }
@@ -49,6 +39,16 @@ impl Address {
 
   pub fn to_katakana(&self) -> String {
     format!("{}{}{}", self.prefecture.katakana, self.city.katakana, self.town.katakana)
+  }
+}
+
+impl rand::distributions::Distribution<Address> for rand::distributions::Standard {
+  fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> Address {
+    Address {
+      prefecture: DATA.addresses.prefecture.choose(rng).cloned().unwrap(),
+      city: DATA.addresses.city.choose(rng).cloned().unwrap(),
+      town: DATA.addresses.town.choose(rng).cloned().unwrap(),
+    }
   }
 }
 
