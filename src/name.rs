@@ -1,15 +1,27 @@
 use lazy_static::lazy_static;
-use rand::{thread_rng, Rng};
+use rand::{seq::SliceRandom, thread_rng};
+use serde::Deserialize;
 use std::fmt;
-use yaml_rust::yaml::{Yaml, YamlLoader};
 
 use super::Item;
 
-lazy_static! {
-  static ref NAMES: Vec<Yaml> = YamlLoader::load_from_str(include_str!("data/names.yml")).unwrap();
+#[derive(Debug, Deserialize)]
+struct FirstName {
+  male: Vec<Item>,
+  female: Vec<Item>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Deserialize)]
+struct Data {
+  first_name: FirstName,
+  last_name: Vec<Item>,
+}
+
+lazy_static! {
+  static ref DATA: Data = serde_yaml::from_str(include_str!("data/names.yml")).unwrap();
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Gender {
   Male,
   Female,
@@ -24,7 +36,7 @@ impl fmt::Display for Gender {
   }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Name {
   pub first: Item,
   pub last: Item,
@@ -33,27 +45,15 @@ pub struct Name {
 
 impl Name {
   pub fn from_gender(gender: Gender) -> Name {
-    let mut r = thread_rng();
+    let mut rng = thread_rng();
 
-    let first_name = match gender {
-      Gender::Male => r.choose(NAMES[0]["first_name"]["male"].as_vec().unwrap()).unwrap(),
-      Gender::Female => r.choose(NAMES[0]["first_name"]["female"].as_vec().unwrap()).unwrap(),
+    let first = match gender {
+      Gender::Male => DATA.first_name.male.choose(&mut rng).cloned().unwrap(),
+      Gender::Female => DATA.first_name.female.choose(&mut rng).cloned().unwrap(),
     };
-    let last_name = r.choose(NAMES[0]["last_name"].as_vec().unwrap()).unwrap();
+    let last = DATA.last_name.choose(&mut rng).cloned().unwrap();
 
-    Name {
-      first: Item::new(
-        first_name[0].as_str().unwrap_or(""),
-        first_name[1].as_str().unwrap_or(""),
-        first_name[2].as_str().unwrap_or(""),
-      ),
-      last: Item::new(
-        last_name[0].as_str().unwrap_or(""),
-        last_name[1].as_str().unwrap_or(""),
-        last_name[2].as_str().unwrap_or(""),
-      ),
-      gender: gender,
-    }
+    Name { first, last, gender }
   }
 
   pub fn to_kanji(&self) -> String {

@@ -1,15 +1,27 @@
 use lazy_static::lazy_static;
-use rand::{thread_rng, Rng};
+use rand::{seq::SliceRandom, thread_rng};
+use serde::Deserialize;
 use std::fmt;
-use yaml_rust::yaml::{Yaml, YamlLoader};
 
 use super::Item;
 
-lazy_static! {
-  static ref ADDRESSES: Vec<Yaml> = YamlLoader::load_from_str(include_str!("data/addresses.yml")).unwrap();
+#[derive(Debug, Deserialize)]
+struct Addresses {
+  prefecture: Vec<Item>,
+  city: Vec<Item>,
+  town: Vec<Item>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize)]
+struct Data {
+  addresses: Addresses,
+}
+
+lazy_static! {
+  static ref DATA: Data = serde_yaml::from_str(include_str!("data/addresses.yml")).unwrap();
+}
+
+#[derive(Clone, Debug)]
 pub struct Address {
   pub prefecture: Item,
   pub city: Item,
@@ -20,27 +32,11 @@ impl Address {
   pub fn new() -> Address {
     let mut r = thread_rng();
 
-    let prefecture = r.choose(ADDRESSES[0]["addresses"]["prefecture"].as_vec().unwrap()).unwrap();
-    let city = r.choose(ADDRESSES[0]["addresses"]["city"].as_vec().unwrap()).unwrap();
-    let town = r.choose(ADDRESSES[0]["addresses"]["town"].as_vec().unwrap()).unwrap();
+    let prefecture = DATA.addresses.prefecture.choose(&mut r).cloned().unwrap();
+    let city = DATA.addresses.city.choose(&mut r).cloned().unwrap();
+    let town = DATA.addresses.town.choose(&mut r).cloned().unwrap();
 
-    Address {
-      prefecture: Item::new(
-        prefecture[0].as_str().unwrap_or(""),
-        prefecture[1].as_str().unwrap_or(""),
-        prefecture[2].as_str().unwrap_or(""),
-      ),
-      city: Item::new(
-        city[0].as_str().unwrap_or(""),
-        city[1].as_str().unwrap_or(""),
-        city[2].as_str().unwrap_or(""),
-      ),
-      town: Item::new(
-        town[0].as_str().unwrap_or(""),
-        town[1].as_str().unwrap_or(""),
-        town[2].as_str().unwrap_or(""),
-      ),
-    }
+    Address { prefecture, city, town }
   }
 
   pub fn to_kanji(&self) -> String {

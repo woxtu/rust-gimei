@@ -1,23 +1,29 @@
 use lazy_static::lazy_static;
 use regex::Regex;
+use serde::Deserialize;
 use std::fs;
-use yaml_rust::{Yaml, YamlLoader};
+
+#[derive(Debug, Deserialize)]
+struct Addresses {
+  prefecture: Vec<Vec<String>>,
+  city: Vec<Vec<String>>,
+  town: Vec<Vec<String>>,
+}
+
+#[derive(Debug, Deserialize)]
+struct Data {
+  addresses: Addresses,
+}
 
 lazy_static! {
-  static ref DATA: Vec<Yaml> = YamlLoader::load_from_str(&fs::read_to_string("src/data/addresses.yml").unwrap()).unwrap();
+  static ref DATA: Data = serde_yaml::from_str(&fs::read_to_string("src/data/addresses.yml").unwrap()).unwrap();
 }
 
 #[test]
 fn prefecture() {
   let address = gimei::address();
 
-  let items = DATA[0]["addresses"]["prefecture"]
-    .as_vec()
-    .unwrap()
-    .into_iter()
-    .map(|x| x.as_vec().unwrap().into_iter().map(|y| y.as_str().unwrap()).collect::<Vec<_>>())
-    .collect::<Vec<_>>();
-
+  let items = &DATA.addresses.prefecture;
   assert!(items.iter().any(|x| x[0] == address.prefecture.kanji));
   assert!(items.iter().any(|x| x[1] == address.prefecture.hiragana));
   assert!(items.iter().any(|x| x[2] == address.prefecture.katakana));
@@ -27,13 +33,7 @@ fn prefecture() {
 fn city() {
   let address = gimei::address();
 
-  let items = DATA[0]["addresses"]["city"]
-    .as_vec()
-    .unwrap()
-    .into_iter()
-    .map(|x| x.as_vec().unwrap().into_iter().map(|y| y.as_str().unwrap()).collect::<Vec<_>>())
-    .collect::<Vec<_>>();
-
+  let items = &DATA.addresses.city;
   assert!(items.iter().any(|x| x[0] == address.city.kanji));
   assert!(items.iter().any(|x| x[1] == address.city.hiragana));
   assert!(items.iter().any(|x| x[2] == address.city.katakana));
@@ -43,13 +43,7 @@ fn city() {
 fn town() {
   let address = gimei::address();
 
-  let items = DATA[0]["addresses"]["town"]
-    .as_vec()
-    .unwrap()
-    .into_iter()
-    .map(|x| x.as_vec().unwrap().into_iter().map(|y| y.as_str().unwrap()).collect::<Vec<_>>())
-    .collect::<Vec<_>>();
-
+  let items = &DATA.addresses.town;
   assert!(items.iter().any(|x| x[0] == address.town.kanji));
   assert!(items.iter().any(|x| x[1] == address.town.hiragana));
   assert!(items.iter().any(|x| x[2] == address.town.katakana));
