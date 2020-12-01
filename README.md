@@ -1,6 +1,5 @@
 # rust-gimei
 
-[![Travis](https://img.shields.io/travis/woxtu/rust-gimei.svg?style=flat-square)](https://travis-ci.org/woxtu/rust-gimei)
 [![Crates.io](https://img.shields.io/crates/v/gimei.svg?style=flat-square)](https://crates.io/crates/gimei)
 
 Rust implementation of [gimei](https://github.com/willnet/gimei); Generate fake name for Japanese.
