@@ -10,7 +10,7 @@ Adding the following to the Cargo.toml in your project:
 
 ```toml
 [dependencies]
-gimei = "0.1"
+gimei = "0.2"
 ```
 
 and import using `extern crate`:

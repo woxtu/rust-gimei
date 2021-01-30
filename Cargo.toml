@@ -1,6 +1,6 @@
 [package]
 name = "gimei"
-version = "0.1.1"
+version = "0.2.0"
 authors = [ "woxtu <woxtup@gmail.com>" ]
 edition = "2018"
 description = "Generate fake name for Japanese"
