@@ -13,12 +13,6 @@ Adding the following to the Cargo.toml in your project:
 gimei = "0.2"
 ```
 
-and import using `extern crate`:
-
-```rust
-extern crate gimei;
-```
-
 ## Usage
 
 Generate fake name.
